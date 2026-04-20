@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DealerHub - Secure Portal</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+  <style>
+    :root {
+      --sidebar-bg: #0f172a; 
+      --sidebar-active: #1e293b;
+      --primary: #2563eb; 
+      --primary-hover: #1d4ed8;
+      --accent: #f59e0b;
+      --surface: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --input-bg: #f8fafc;
+      --success: #10b981;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      /* Cinematic Deep Background */
+      background: #fff;
+      margin: 0; padding: 0;
+      display: flex; justify-content: center; align-items: center;
+      height: 100vh; overflow: hidden;
+    }
+
+    /* ✨ FRIDAY PREMIUM: ULTRA-HIGH CLASS VIDEO WELCOME SCREEN */
+    #welcomeScreen {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; color: white; z-index: 9999;
+      overflow: hidden; 
+      background: linear-gradient(135deg, #0f172a, #1e3a5f); /* ✨ FRIDAY FIX: Cinematic Video Fallback */
+    }
+    
+    .welcome-video-container {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -2;
+    }
+    
+    .welcome-video-container video {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+
+    .welcome-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      /* Premium Light Gradient para litaw ang video */
+      background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%);
+      z-index: -1;
+    }
+
+    .welcome-glass-card {
+      background: rgba(255, 255, 255, 0.03); /* Mas manipis na glass para mas classy */
+      backdrop-filter: blur(25px) saturate(150%);
+      -webkit-backdrop-filter: blur(25px) saturate(150%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 60px 45px;
+      border-radius: 32px;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+      display: flex; flex-direction: column; align-items: center;
+      animation: premiumEntrance 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      max-width: 90%; width: 550px; box-sizing: border-box;
+    }
+
+    @keyframes premiumEntrance { 
+      from { opacity: 0; transform: translateY(60px) scale(0.95); } 
+      to { opacity: 1; transform: translateY(0) scale(1); } 
+    }
+
+    .welcome-logo { 
+      width: 120px; height: auto; margin-bottom: 30px; 
+      filter: drop-shadow(0 0 20px rgba(255,255,255,0.3)) brightness(0) invert(1);
+    }
+    
+    .welcome-title { 
+      font-size: 42px; font-weight: 900; margin: 0 0 15px 0; 
+      letter-spacing: -1.5px; text-transform: uppercase;
+      background: linear-gradient(to bottom, #ffffff, #94a3b8);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    
+    .welcome-sub { 
+      font-size: 17px; color: rgba(255,255,255,0.7); 
+      margin: 0 0 45px 0; font-weight: 300; letter-spacing: 0.5px;
+    }
+    
+    .btn-start {
+      background: #ffffff; color: #000000; padding: 20px 50px; 
+      font-size: 15px; font-weight: 700; text-transform: uppercase;
+      border-radius: 12px; border: none; cursor: pointer; 
+      display: flex; align-items: center; gap: 15px;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 10px 30px rgba(255,255,255,0.2);
+    }
+    
+    .btn-start:hover { 
+      background: #000; color: white; 
+      transform: translateY(-5px); 
+      box-shadow: 0 20px 40px rgba(37, 99, 235, 0.4); 
+    }
+
+    #welcomeScreen footer {
+      position: absolute; bottom: 30px; left: 0; width: 100%;
+      text-align: center; color: rgba(255, 255, 255, 0.6);
+      font-size: 12px; font-weight: 400; letter-spacing: 1.5px;
+      z-index: 10;
+    }
+
+/* THE SAAS WIZARD CONTAINER */
+    .wizard-wrapper {
+      display: flex;
+      width: 95vw; max-width: 1150px;
+      height: 88vh; max-height: 750px;
+      background: var(--surface);
+      border-radius: 24px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+      overflow: hidden;
+      animation: zoomIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    /* LEFT SIDEBAR (VERTICAL STEPPER) */
+    .wizard-sidebar {
+      width: 320px;
+      background: var(--sidebar-bg);
+      color: white;
+      padding: 40px 30px;
+      display: flex; flex-direction: column;
+      position: relative;
+      border-right: 1px solid rgba(255,255,255,0.1);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 50px; }
+    .brand i { font-size: 28px; color: var(--accent); }
+    .brand h1 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
+
+    .step-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px; }
+    .step-item {
+      display: flex; align-items: center; gap: 15px;
+      padding: 15px 20px; border-radius: 16px;
+      color: #94a3b8; transition: 0.4s ease;
+      border: 1px solid transparent;
+    }
+    .step-item .icon-box {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: rgba(255,255,255,0.05); display: flex; justify-content: center; align-items: center;
+      font-size: 14px; transition: 0.4s ease;
+    }
+    .step-item .text-box { display: flex; flex-direction: column; }
+    .step-item .step-label { font-size: 10px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; opacity: 0.7; }
+    .step-item .step-title { font-size: 14px; font-weight: 600; margin-top: 2px; }
+
+    /* Active Step Styling */
+    .step-item.active { background: var(--sidebar-active); border-color: rgba(255,255,255,0.1); color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+    .step-item.active .icon-box { background: var(--primary); color: white; box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
+    
+    /* Completed Step Styling */
+    .step-item.completed { color: white; }
+    .step-item.completed .icon-box { background: var(--success); color: white; }
+    .step-item.skipped { display: none !important; }
+
+    .sidebar-footer { margin-top: auto; font-size: 11px; color: #64748b; line-height: 1.5; }
+    .sidebar-footer i { color: var(--success); margin-right: 5px; }
+
+    /* RIGHT CONTENT AREA */
+    .wizard-content {
+      flex: 1;
+      display: flex; flex-direction: column;
+      position: relative;
+    }
+    .form-header { padding: 30px 40px 20px 40px; border-bottom: 1px solid var(--border); }
+    .form-header h2 { margin: 0; color: var(--text-main); font-size: 22px; font-weight: 700; }
+    .form-header p { margin: 5px 0 0 0; color: var(--text-muted); font-size: 13px; }
+    
+    /* ✨ FRIDAY FIX: Mobile Progress Bar CSS */
+    .mobile-progress-wrapper { display: none; margin-top: 15px; }
+    .mobile-progress-text { font-size: 11px; font-weight: 700; color: var(--primary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .mobile-progress-track { width: 100%; height: 6px; background: var(--border); border-radius: 10px; overflow: hidden; }
+    .mobile-progress-fill { height: 100%; background: var(--primary); width: 25%; transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+
+    .form-body {
+      flex: 1; padding: 30px 40px;
+      overflow-y: auto; /* Internal scroll lang! */
+    }
+    
+    /* Sleek Scrollbar */
+    .form-body::-webkit-scrollbar { width: 6px; }
+    .form-body::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+
+    .form-step { display: none; animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .form-step.active { display: block; }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+    /* 3-COLUMN GRID SYSTEM */
+    .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+    .span-2 { grid-column: span 2; }
+    .span-3 { grid-column: span 3; }
+
+    /* MODERN VERCEL-STYLE INPUTS */
+    .input-group { position: relative; }
+    .input-group input, .input-group select { 
+      width: 100%; padding: 22px 15px 8px 15px; 
+      border: 1px solid var(--border); border-radius: 10px; 
+      background: var(--input-bg); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; 
+      color: var(--text-main); transition: all 0.2s ease; box-sizing: border-box; outline: none; appearance: none;
+    }
+    .input-group label { 
+      position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); 
+      font-size: 13px; transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; z-index: 2;
+    }
+    .input-group i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #cbd5e1; font-size: 14px; pointer-events: none;}
+    
+    .input-group input:hover, .input-group select:hover { border-color: #94a3b8; }
+    
+    /* Strict Focus Rules - Tinanggal natin yung has-value sa buong input para di mag-auto highlight */
+    .input-group input:focus, 
+    .input-group input:not(:placeholder-shown):not([type="date"]),
+    .input-group select:focus, 
+    .input-group select.has-value,
+    .input-group input.has-value { 
+      background: var(--surface); border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); 
+    }
+
+    /* ✨ FRIDAY FIX: Custom Modern Dropdown Styling (Subtle Glass & Glow) */
+    .input-group select {
+      -webkit-appearance: none; -moz-appearance: none; appearance: none;
+      background-color: rgba(248, 250, 252, 0.6); /* Subtle glass tint */
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat; background-position: right 15px center; background-size: 16px;
+      padding-right: 40px; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    /* Premium Glow & Blue Arrow on Focus/Has-Value */
+    .input-group select:focus, .input-group select.has-value {
+      background-color: #ffffff;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12), inset 0 2px 4px rgba(0,0,0,0.02);
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      background-size: 16px;
+    }
+    
+    /* Itago ang font-awesome icon na ginagamit dati para hindi mag-doble ang arrow */
+    .input-group select + label + i { display: none; }
+
+    /* Label Animation Rules */
+    .input-group input:focus + label,
+    .input-group input:not(:placeholder-shown) + label,
+    .input-group select:focus + label, 
+    .input-group select.has-value + label,
+    .input-group input.has-value + label { 
+      top: 14px; font-size: 10px; color: var(--primary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    /* ✨ FRIDAY FIX: Hide Number Spinners (Up/Down Arrows) */
+  .input-group input[type="number"]::-webkit-outer-spin-button,
+  .input-group input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .input-group input[type="number"] {
+    -moz-appearance: textfield; /* Para sa Firefox */
+  }
+
+    .input-group input.invalid, .input-group select.invalid { border-color: var(--error); background-color: #fef2f2; }
+    /* ✨ FRIDAY FIX: Green border on valid inputs */
+    .input-group input.valid, .input-group select.valid { border-color: var(--success); }
+
+    /* TOGGLE SWITCH */
+    .toggle-container { display: flex; align-items: center; justify-content: space-between; background: rgba(245, 158, 11, 0.05); padding: 12px 20px; border-radius: 10px; border: 1px dashed var(--accent); }
+    .switch { position: relative; display: inline-block; width: 44px; height: 24px; margin: 0; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); transition: .3s; border-radius: 24px; }
+    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
+    input:checked + .slider { background-color: var(--primary); }
+    input:checked + .slider:before { transform: translateX(20px); }
+
+    /* ACTION FOOTER */
+    .form-footer { padding: 20px 40px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; background: #f8fafc; }
+    button { padding: 12px 28px; font-size: 14px; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; transition: 0.3s ease; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 8px; }
+    .btn-prev { background-color: white; color: var(--text-main); border: 1px solid var(--border); }
+    .btn-prev:hover { background-color: var(--border); }
+    .btn-next, .btn-submit { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+    .btn-next:hover, .btn-submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3); }
+    /* ACTION FOOTER BUTTONS FIX */
+    .btn-submit:disabled { background: var(--border); color: white; cursor: not-allowed; transform: none; box-shadow:none;}
+
+    /* RECEIPT STYLE REVIEW */
+    .receipt-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);}
+    .receipt-title { font-size: 12px; color: var(--primary); font-weight: 700; text-transform: uppercase; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; border-bottom: 1px dashed var(--border); padding-bottom: 10px;}
+    .receipt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+    .r-item { display: flex; flex-direction: column; }
+    .r-label { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+    .r-val { font-size: 13px; color: var(--text-main); font-weight: 500; margin-top: 2px; }
+    
+    .consent-box { display: flex; gap: 12px; padding: 15px; background: rgba(37, 99, 235, 0.05); border-radius: 10px; border: 1px solid rgba(37, 99, 235, 0.2); margin-top: 10px;}
+    .consent-box input { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; margin-top: 2px;}
+    .consent-box label { font-size: 12px; color: var(--text-main); line-height: 1.5; cursor: pointer;}
+
+    /* ✨ FRIDAY FIX: Premium Dropdown List Styling (Choices.js) */
+.choices { margin-bottom: 0; width: 100%; position: relative; }
+.choices[data-type*="select-one"]::after { display: none; }
+.choices__inner {
+  background-color: rgba(248, 250, 252, 0.6) !important;
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border) !important; border-radius: 10px !important;
+  padding: 22px 15px 8px 15px !important; min-height: 54px !important; box-sizing: border-box !important;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-main);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: none !important; z-index: 1; overflow: hidden;
+}
+.choices.is-focused .choices__inner {
+  background-color: #ffffff !important; border-color: var(--primary) !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12), inset 0 2px 4px rgba(0,0,0,0.02) !important;
+}
+.choices__list--dropdown {
+  position: absolute !important; width: 100% !important; z-index: 9999 !important;
+  background-color: #ffffff !important;
+  border-radius: 12px !important; border: 1px solid var(--border) !important;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.1) !important; padding: 4px 8px !important;
+  margin-top: 5px;
+}
+.choices__list--dropdown .choices__list { padding: 0 !important; margin: 0 !important; }
+.choices__list--dropdown .choices__item { border-radius: 8px; font-size: 13px; padding: 10px 15px; margin: 0 !important; transition: 0.2s; color: var(--text-main); }
+.choices__list--dropdown .choices__item--selectable.is-highlighted { background-color: rgba(37, 99, 235, 0.08); color: var(--primary); font-weight: 600; }
+
+.input-group label { z-index: 10; pointer-events: none; }
+.input-group.active-dropdown label {
+  top: 14px; font-size: 10px; color: var(--primary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.input-group i { z-index: 10; pointer-events: none; }
+.input-group.active-dropdown i { color: var(--primary); }
+
+/* PERFECTLY CENTERED SUCCESS SCREEN */
+    #successMessage { 
+      display: none; 
+      text-align: center; 
+      padding: 0; 
+      margin: 0; 
+      height: 100%; 
+      /* Ito ang nagpapagitna sa kanya (Vertical & Horizontal) */
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+      align-items: center; 
+    }
+    .success-icon { font-size: 60px; color: var(--success); margin-bottom: 15px; animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+    .ref-no { font-size: 32px; font-weight: 700; color: var(--primary); margin: 20px 0; letter-spacing: 2px; background: #f8fafc; border: 2px dashed var(--border); padding: 15px 30px; border-radius: 12px; display: inline-block; }
+    
+    /* BUTTON TEXT COLOR FIX */
+    .btn-new-form {
+      margin-top: 30px; 
+      background: var(--sidebar-bg); 
+      color: #ffffff; /* Puti na ang text! */
+      padding: 12px 30px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .btn-new-form:hover { background: var(--primary); transform: translateY(-2px); }
+  </style>
+</head>
+<body>
+
+<div id="welcomeScreen">
+  <div class="welcome-video-container">
+    <video autoplay muted loop playsinline id="bgVideo" poster="https://cdn.flixel.com/flixel/mrdhctpcplihq1e7w25m.hd.mp4?v=1">
+      <source src="https://cdn.flixel.com/flixel/mrdhctpcplihq1e7w25m.hd.mp4?v=1" type="video/mp4">
+      <source src="https://cdn.flixel.com/flixel/mrdhctpcplihq1e7w25m.hd.mp4?v=1" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+  
+  <div class="welcome-overlay"></div>
+  
+  <div class="welcome-glass-card">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/2/23/Nissan_2020_logo.svg" alt="Nissan Logo" class="welcome-logo">
+    <h1 class="welcome-title">Elevate Your Drive</h1>
+    <p class="welcome-sub">Experience a seamless path to vehicle ownership with TSSI.</p>
+    <button class="btn-start" onclick="enterForm()">
+      Begin Journey <i class="fas fa-chevron-right"></i>
+    </button>
+  </div> 
+  <footer>
+  <span>DealerHub | Tetra Sales & Services, Inc.</span><br>
+  <small>&copy; 2026 All Rights Reserved.</small>
+</footer>
+</div>
+
+<div class="wizard-wrapper" id="mainWizard" style="display: none;">
+  
+  <div class="wizard-sidebar">
+    <div class="brand">
+      <i class="fas fa-car-side"></i>
+      <h1>DealerHub</h1>
+    </div>
+    
+    <ul class="step-list" id="stepList">
+      <li class="step-item active" id="ind-0">
+        <div class="icon-box"><i class="fas fa-id-card"></i></div>
+        <div class="text-box"><span class="step-label"></span><span class="step-title">Principal Maker</span></div>
+      </li>
+      <li class="step-item" id="ind-1">
+        <div class="icon-box"><i class="fas fa-user-plus"></i></div>
+        <div class="text-box"><span class="step-label"></span><span class="step-title">Co-Maker Details</span></div>
+      </li>
+      <li class="step-item" id="ind-2">
+        <div class="icon-box"><i class="fas fa-wallet"></i></div>
+        <div class="text-box"><span class="step-label"></span><span class="step-title">Financial Data</span></div>
+      </li>
+      <li class="step-item" id="ind-3">
+        <div class="icon-box"><i class="fas fa-clipboard-check"></i></div>
+        <div class="text-box"><span class="step-label"></span><span class="step-title">Review & Submit</span></div>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <i class="fas fa-shield-alt"></i> 256-bit SSL Secure Encryption<br>
+      Your data is protected under the Data Privacy Act of 2012.
+    </div>
+  </div>
+
+  <div class="wizard-content">
+    
+    <div class="form-header" id="formHeader">
+      <h2 id="headerTitle">Principal Applicant</h2>
+      <p id="headerSub">Please provide your personal and employment details.</p>
+      <div class="mobile-progress-wrapper">
+        <div class="mobile-progress-text" id="mobileProgressText">Step 1 of 4 (25%)</div>
+        <div class="mobile-progress-track">
+          <div class="mobile-progress-fill" id="mobileProgressFill"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-body">
+      <form id="appForm" onsubmit="return false;">
+        
+        <div class="form-step" id="step-0">
+          <div class="form-grid">
+            <div class="toggle-container span-3" style="margin-bottom: 10px; background: rgba(37, 99, 235, 0.05); border-color: rgba(37, 99, 235, 0.2);">
+              <div>
+                <strong style="color:var(--primary); font-size:14px;"><i class="fas fa-users" style="margin-right:5px;"></i> Include a Co-Maker?</strong>
+                <p style="margin:2px 0 0 0; font-size:11px; color:var(--text-muted);">Switch this on if you are applying with a co-borrower.</p>
+              </div>
+              <label class="switch"><input type="checkbox" id="coMakerToggle" onchange="toggleCoMaker()"><span class="slider"></span></label>
+            </div>
+            
+            <div class="input-group span-2"><input type="text" name="makerName" placeholder=" " required><label>Full Name *</label><i class="fas fa-user"></i></div>
+            <div class="input-group">
+              <select name="makerMarital" required>
+                <option value="" disabled selected hidden></option>
+                <option value="Single">Single</option><option value="Married">Married</option>
+                <option value="Widowed">Widowed</option><option value="Separated">Separated</option>
+              </select>
+              <label>Marital Status *</label><i class="fas fa-chevron-down"></i>
+            </div>
+            
+            <div class="input-group"><input type="date" name="makerBday" required>
+            <label>Date of Birth *</label></div>
+            <div class="input-group"><input type="number" name="makerAge" placeholder=" " required><label>Age *</label><i class="fas fa-hashtag"></i></div>
+            <div class="input-group"><input type="text" name="makerCell" placeholder=" " maxlength="13" required><label>Mobile Number *</label><i class="fas fa-phone"></i></div>
+            
+            <div class="input-group"><input type="text" name="makerTin" placeholder=" " maxlength="11" required><label>TIN Number *</label><i class="fas fa-id-badge"></i></div>
+            <div class="input-group span-2"><input type="email" name="makerEmail" placeholder=" " required><label>Email Address *</label><i class="fas fa-envelope"></i></div>
+            
+            <div class="input-group span-1">
+              <select id="makerProvince" required onchange="updateCities('maker')">
+                <option value="" disabled selected hidden></option>
+                <optgroup label="NCR"><option value="Metro Manila">Metro Manila</option></optgroup>
+                <optgroup label="Luzon">
+                  <option value="Bataan">Bataan</option><option value="Batangas">Batangas</option><option value="Bulacan">Bulacan</option>
+                  <option value="Cavite">Cavite</option><option value="Laguna">Laguna</option><option value="Nueva Ecija">Nueva Ecija</option>
+                  <option value="Palawan">Palawan</option><option value="Pampanga">Pampanga</option><option value="Pangasinan">Pangasinan</option>
+                  <option value="Quezon">Quezon</option><option value="Rizal">Rizal</option><option value="Tarlac">Tarlac</option>
+                </optgroup>
+                <optgroup label="Visayas">
+                  <option value="Bohol">Bohol</option><option value="Cebu">Cebu</option><option value="Iloilo">Iloilo</option>
+                  <option value="Leyte">Leyte</option><option value="Negros Occidental">Negros Occidental</option><option value="Negros Oriental">Negros Oriental</option>
+                </optgroup>
+                <optgroup label="Mindanao">
+                  <option value="Davao del Norte">Davao del Norte</option><option value="Davao del Sur">Davao del Sur</option>
+                  <option value="Davao Oriental">Davao Oriental</option><option value="Misamis Oriental">Misamis Oriental</option>
+                  <option value="Zamboanga del Sur">Zamboanga del Sur</option>
+                </optgroup>
+              </select>
+              <label>Province/Region *</label><i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="input-group span-1">
+              <select id="makerCity" required disabled>
+                <option value="" disabled selected hidden></option>
+              </select>
+              <label>City / Municipality *</label><i class="fas fa-city"></i>
+            </div>
+            <div class="input-group span-1"><input type="text" id="makerStreet" placeholder=" " required><label>Unit #, Street, Brgy *</label><i class="fas fa-map-marker-alt"></i></div>
+            <input type="hidden" name="makerAddress" id="makerAddressHidden">
+            
+            <div class="input-group"><input type="text" name="makerStay" placeholder=" "><label>Length of Stay</label><i class="fas fa-clock"></i></div>
+            <div class="input-group span-2"><input type="text" name="makerEmployer" placeholder=" "><label>Employer / Company</label><i class="fas fa-building"></i></div>
+            
+            <div class="input-group"><input type="text" name="makerPosition" placeholder=" "><label>Position / Title</label><i class="fas fa-briefcase"></i></div>
+            <div class="input-group"><input type="text" name="makerEmpContact" placeholder=" "><label>Employer Contact</label><i class="fas fa-phone-office"></i></div>
+            <div class="input-group"><input type="text" name="makerYrsCompany" placeholder=" "><label>Yrs in Company</label><i class="fas fa-calendar-check"></i></div>
+            
+            <div class="input-group span-3"><input type="text" name="makerEmpAddress" placeholder=" "><label>Employer Address</label><i class="fas fa-map"></i></div>
+          </div>
+        </div>
+
+        <div class="form-step" id="step-1">
+          <div class="form-grid">
+            <div class="input-group span-2"><input type="text" name="coMakerName" placeholder=" "><label>Full Name</label><i class="fas fa-user-plus"></i></div>
+            <div class="input-group">
+              <select name="coMakerMarital">
+                <option value="" disabled selected hidden></option>
+                <option value="Single">Single</option><option value="Married">Married</option>
+                <option value="Widowed">Widowed</option><option value="Separated">Separated</option>
+              </select>
+              <label>Marital Status</label><i class="fas fa-chevron-down"></i>
+            </div>
+            
+            <div class="input-group"><input type="text" name="coMakerBday" placeholder=" " onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'"><label>Date of Birth</label></div>
+            <div class="input-group"><input type="number" name="coMakerAge" placeholder=" "><label>Age</label><i class="fas fa-hashtag"></i></div>
+            <div class="input-group"><input type="text" name="coMakerCell" placeholder=" " maxlength="13"><label>Mobile Number</label><i class="fas fa-phone"></i></div>
+            
+            <div class="input-group"><input type="text" name="coMakerTin" placeholder=" " maxlength="11"><label>TIN Number</label><i class="fas fa-id-badge"></i></div>
+            <div class="input-group span-1">
+              <select id="coMakerProvince" onchange="updateCities('coMaker')">
+                <option value="" disabled selected hidden></option>
+                <optgroup label="NCR"><option value="Metro Manila">Metro Manila</option></optgroup>
+                <optgroup label="Luzon">
+                  <option value="Bataan">Bataan</option><option value="Batangas">Batangas</option><option value="Bulacan">Bulacan</option>
+                  <option value="Cavite">Cavite</option><option value="Laguna">Laguna</option><option value="Nueva Ecija">Nueva Ecija</option>
+                  <option value="Palawan">Palawan</option><option value="Pampanga">Pampanga</option><option value="Pangasinan">Pangasinan</option>
+                  <option value="Quezon">Quezon</option><option value="Rizal">Rizal</option><option value="Tarlac">Tarlac</option>
+                </optgroup>
+                <optgroup label="Visayas">
+                  <option value="Bohol">Bohol</option><option value="Cebu">Cebu</option><option value="Iloilo">Iloilo</option>
+                  <option value="Leyte">Leyte</option><option value="Negros Occidental">Negros Occidental</option><option value="Negros Oriental">Negros Oriental</option>
+                </optgroup>
+                <optgroup label="Mindanao">
+                  <option value="Davao del Norte">Davao del Norte</option><option value="Davao del Sur">Davao del Sur</option>
+                  <option value="Davao Oriental">Davao Oriental</option><option value="Misamis Oriental">Misamis Oriental</option>
+                  <option value="Zamboanga del Sur">Zamboanga del Sur</option>
+                </optgroup>
+              </select>
+              <label>Province/Region</label><i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="input-group span-1">
+              <select id="coMakerCity" disabled>
+                <option value="" disabled selected hidden></option>
+              </select>
+              <label>City / Municipality</label><i class="fas fa-city"></i>
+            </div>
+            <div class="input-group span-1"><input type="text" id="coMakerStreet" placeholder=" "><label>Unit #, Street, Brgy</label><i class="fas fa-map-marker-alt"></i></div>
+            <input type="hidden" name="coMakerAddress" id="coMakerAddressHidden">
+            
+            <div class="input-group"><input type="text" name="coMakerStay" placeholder=" "><label>Length of Stay</label><i class="fas fa-clock"></i></div>
+            <div class="input-group span-2"><input type="text" name="coMakerEmployer" placeholder=" "><label>Employer / Company</label><i class="fas fa-building"></i></div>
+            
+            <div class="input-group"><input type="text" name="coMakerPosition" placeholder=" "><label>Position / Title</label><i class="fas fa-briefcase"></i></div>
+            <div class="input-group"><input type="text" name="coMakerEmpContact" placeholder=" "><label>Employer Contact</label><i class="fas fa-phone-office"></i></div>
+            <div class="input-group"><input type="text" name="coMakerYrsCompany" placeholder=" "><label>Yrs in Company</label><i class="fas fa-calendar-check"></i></div>
+            
+            <div class="input-group span-3"><input type="text" name="coMakerEmpAddress" placeholder=" "><label>Employer Address</label><i class="fas fa-map"></i></div>
+          </div>
+        </div>
+
+        <div class="form-step" id="step-2">
+          <div class="form-grid">
+            
+            <div class="input-group span-2">
+              <select name="agentName" id="agentSelect" required onchange="updateManager()">
+                <option value="" disabled selected hidden></option>
+              </select>
+              <label>Name of the Agent *</label><i class="fas fa-user-tie"></i>
+            </div>
+            <div class="input-group span-1">
+              <input type="text" name="managerName" id="managerInput" placeholder=" " readonly style="background-color: #e2e8f0; cursor: not-allowed; font-weight: 700;">
+              <label>Manager</label><i class="fas fa-user-shield"></i>
+            </div>
+
+            <div class="input-group span-3">
+              <select name="modeOfPayment" id="mopSelect" required onchange="toggleBankFields()">
+                <option value="" disabled selected hidden></option>
+                <option value="Cash">Cash</option>
+                <option value="In-house financing">In-house financing</option>
+                <option value="Purchase order P.O">Purchase order P.O</option>
+              </select>
+              <label>Mode of Payment *</label><i class="fas fa-money-check-alt"></i>
+            </div>
+
+            <div class="input-group span-1">
+              <select name="carModel" id="carModelSelect" required onchange="updateVariants()">
+                <option value="" disabled selected hidden></option>
+              </select>
+              <label>Target Car Model *</label><i class="fas fa-car"></i>
+            </div>
+            <div class="input-group span-1">
+              <select name="carVariant" id="carVariantSelect" required onchange="updateColors()" disabled>
+                <option value="" disabled selected hidden></option>
+              </select>
+              <label>Variant *</label><i class="fas fa-cogs"></i>
+            </div>
+            <div class="input-group span-1">
+              <select name="carColor" id="carColorSelect" required disabled>
+                <option value="" disabled selected hidden></option>
+              </select>
+              <label>Color *</label><i class="fas fa-palette"></i>
+            </div>
+
+            <div class="input-group span-3">
+              <span style="position:absolute; left:15px; top:50%; transform:translateY(-50%); color:var(--success); font-weight:700; font-size:16px; z-index:2; pointer-events:none;">₱</span>
+              <input type="text" name="makerIncome" placeholder=" " required style="font-size: 16px; font-weight:700; color:var(--success); padding-left: 35px;">
+              <label style="left:35px;">Maker Monthly Income *</label>
+              <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <div class="input-group span-3" id="coMakerIncomeGroup">
+              <span style="position:absolute; left:15px; top:50%; transform:translateY(-50%); color:var(--success); font-weight:700; font-size:16px; z-index:2; pointer-events:none;">₱</span>
+              <input type="text" name="coMakerIncome" placeholder=" " style="font-size: 16px; font-weight:700; color:var(--success); padding-left: 35px;">
+              <label style="left:35px;">Co-Maker Monthly Income</label>
+              <i class="fas fa-money-bill-wave"></i>
+            </div>
+            
+            <div class="input-group span-3" id="bankTypeGroup">
+              <select name="bankType" id="bankTypeInput" required>
+                <option value="" disabled selected hidden></option>
+                <option value="Savings Account">Savings Account</option>
+                <option value="Checking Account">Checking Account</option>
+              </select>
+              <label>Bank Account Type *</label><i class="fas fa-credit-card"></i>
+            </div>
+            <div class="input-group span-3" id="bankNameGroup">
+              <select name="bankName" id="bankNameInput" required>
+                <option value="" disabled selected hidden></option>
+                <? let bArr = banksList.split(','); for(let i=0; i<bArr.length; i++) { ?>
+                   <option value="<?= bArr[i].trim() ?>"><?= bArr[i].trim() ?></option>
+                <? } ?>
+              </select>
+              <label>Preferred Bank *</label><i class="fas fa-building-columns"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-step" id="step-3">
+          
+          <div class="receipt-card">
+            <div class="receipt-title"><i class="fas fa-user"></i> Maker Details</div>
+            <div class="receipt-grid">
+              <div class="r-item span-2"><span class="r-label">Name</span><span class="r-val" id="r_mName"></span></div>
+              <div class="r-item"><span class="r-label">Mobile</span><span class="r-val" id="r_mCell"></span></div>
+              <div class="r-item span-3"><span class="r-label">Address</span><span class="r-val" id="r_mAddress"></span></div>
+              <div class="r-item span-2"><span class="r-label">Employer</span><span class="r-val" id="r_mEmp"></span></div>
+              <div class="r-item"><span class="r-label">Income</span><span class="r-val" id="r_mInc" style="color:var(--success)"></span></div>
+            </div>
+          </div>
+
+          <div class="receipt-card" id="reviewCoMakerCard">
+            <div class="receipt-title"><i class="fas fa-user-plus"></i> Co-Maker Details</div>
+            <div class="receipt-grid">
+              <div class="r-item span-2"><span class="r-label">Name</span><span class="r-val" id="r_cName"></span></div>
+              <div class="r-item"><span class="r-label">Mobile</span><span class="r-val" id="r_cCell"></span></div>
+              <div class="r-item span-3"><span class="r-label">Address</span><span class="r-val" id="r_cAddress"></span></div>
+              <div class="r-item span-2"><span class="r-label">Employer</span><span class="r-val" id="r_cEmp"></span></div>
+              <div class="r-item"><span class="r-label">Income</span><span class="r-val" id="r_cInc" style="color:var(--success)"></span></div>
+            </div>
+          </div>
+          
+          <div class="receipt-card">
+            <div class="receipt-title"><i class="fas fa-car"></i> Application Details</div>
+            <div class="receipt-grid">
+              <div class="r-item span-2"><span class="r-label">Agent</span><span class="r-val" id="r_agent"></span></div>
+              <div class="r-item span-1"><span class="r-label">Manager</span><span class="r-val" id="r_manager"></span></div>
+              
+              <div class="r-item span-1"><span class="r-label">Target Car Model</span><span class="r-val" id="r_carModel" style="color:var(--primary); font-weight:700;"></span></div>
+              <div class="r-item span-1"><span class="r-label">Variant</span><span class="r-val" id="r_carVariant"></span></div>
+              <div class="r-item span-1"><span class="r-label">Color</span><span class="r-val" id="r_carColor"></span></div>
+
+              <div class="r-item span-3"><span class="r-label">Mode of Payment</span><span class="r-val" id="r_mop"></span></div>
+              <div class="r-item" id="r_bType_box"><span class="r-label">Bank Type</span><span class="r-val" id="r_bType"></span></div>
+              <div class="r-item span-2" id="r_bName_box"><span class="r-label">Preferred Bank</span><span class="r-val" id="r_bName"></span></div>
+            </div>
+          </div>
+          
+          <div class="consent-box">
+            <input type="checkbox" id="consentCheck" onchange="toggleSubmitButton()">
+            <label for="consentCheck">I certify that the information provided is true. I agree to the <b>Terms & Conditions</b> and consent to data processing under the Data Privacy Act.</label>
+          </div>
+
+        </div>
+
+      </form>
+
+      <div id="successMessage" style="display: none;">
+        <i class="fas fa-check-circle success-icon"></i>
+        <h2 style="color: var(--text-main); font-size: 28px; margin-bottom:5px; margin-top: 0;">Application Secured!</h2>
+        <p style="color: var(--text-muted); font-size: 14px; margin-top:0;">Your data has been securely transmitted.</p>
+        <div class="ref-no" id="displayRefNo"></div>
+        <p style="color: var(--text-muted); font-size: 13px;">Check your email for the official confirmation.</p>
+        
+        <button class="btn-new-form" onclick="startNewForm()"><i class="fas fa-sync-alt"></i> Start New Form</button>
+      </div>
+
+    </div>
+
+    <div class="form-footer" id="formFooter">
+      <button type="button" class="btn-prev" id="prevBtn" onclick="navigateForm(-1)" style="display:none;"><i class="fas fa-chevron-left"></i> Back</button>
+      <div style="flex-grow: 1;"></div>
+      <button type="button" class="btn-next" id="nextBtn" onclick="navigateForm(1)">Next Step <i class="fas fa-chevron-right"></i></button>
+      <button type="button" class="btn-submit" id="submitBtn" onclick="submitData()" style="display:none;" disabled><i class="fas fa-paper-plane"></i> Final Submit</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const banksListRaw = "<?= banksList ?>";
+  let parsedTeam = {};
+  let agentManagerMap = {};
+  let vehicleCatalog = {};
+
+  function syncLiveFormData() {
+    let agentSelect = document.getElementById('agentSelect');
+    let modelSelect = document.getElementById('carModelSelect');
+    
+    if (agentSelect.options.length <= 1) {
+      agentSelect.innerHTML = '<option value="" disabled selected hidden>Loading live agents...</option>';
+      modelSelect.innerHTML = '<option value="" disabled selected hidden>Loading live vehicles...</option>';
+    }
+
+    google.script.run.withSuccessHandler(function(res) {
+      try {
+        parsedTeam = JSON.parse(res.teamHierarchy || '{}');
+        vehicleCatalog = JSON.parse(res.carCatalog || '{}');
+        
+        let currentAgent = agentSelect.value;
+        let currentModel = modelSelect.value;
+        let currentVariant = document.getElementById('carVariantSelect').value;
+        let currentColor = document.getElementById('carColorSelect').value;
+
+        initTeamDropdown();
+        initCatalog();
+
+        if(currentAgent) { agentSelect.value = currentAgent; updateManager(); }
+        if(currentModel) { modelSelect.value = currentModel; updateVariants(); }
+        if(currentVariant) { document.getElementById('carVariantSelect').value = currentVariant; updateColors(); }
+        if(currentColor) { document.getElementById('carColorSelect').value = currentColor; }
+        
+        loadFormDraft(); // ✨ FRIDAY FIX: Restore draft upon successful page load
+      } catch(e) {
+        console.error("Sync Error:", e);
+      }
+    }).getLiveDropdownData();
+  }
+
+  window.addEventListener('load', syncLiveFormData);
+
+  function initTeamDropdown() {
+    let agentSelect = document.getElementById('agentSelect');
+    if (!agentSelect) return;
+    agentSelect.innerHTML = '<option value="" disabled selected hidden></option>';
+    let allAgents = [];
+    for (let manager in parsedTeam) {
+      parsedTeam[manager].forEach(agent => {
+        agentManagerMap[agent] = manager;
+        if (!allAgents.includes(agent)) allAgents.push(agent);
+      });
+    }
+    allAgents.sort();
+    allAgents.forEach(agent => {
+      let opt = document.createElement('option');
+      opt.value = agent; opt.innerText = agent;
+      agentSelect.appendChild(opt);
+    });
+  }
+
+  function updateManager() {
+    let agent = document.getElementById('agentSelect').value;
+    let managerInput = document.getElementById('managerInput');
+    if (agent && agentManagerMap[agent]) {
+      managerInput.value = agentManagerMap[agent];
+      managerInput.classList.add('has-value');
+    } else {
+      managerInput.value = "No Manager Assigned";
+      managerInput.classList.add('has-value');
+    }
+  }
+
+  let currentStepIdx = 0;
+  const titles = [
+    { main: "Principal Applicant", sub: "Please provide your personal and employment details." },
+    { main: "Co-Maker Details", sub: "Provide the information of your co-borrower." },
+    { main: "Financial Data", sub: "Declare your income and preferred banking institution." },
+    { main: "Review & Submit", sub: "Verify your information before finalizing the application." }
+  ];
+  
+  function getActiveSteps() { return Array.from(document.querySelectorAll('.form-step:not(.skipped)')); }
+  function getActiveIcons() { return Array.from(document.querySelectorAll('.step-item:not(.skipped)')); }
+
+  function renderView() {
+    let steps = getActiveSteps();
+    steps.forEach(s => s.style.display = "none");
+    steps[currentStepIdx].style.display = "block";
+    
+    let realIndex = parseInt(steps[currentStepIdx].id.replace('step-',''));
+    document.getElementById('headerTitle').innerText = titles[realIndex].main;
+    document.getElementById('headerSub').innerText = titles[realIndex].sub;
+
+    // ✨ FRIDAY FIX: Update Mobile Progress Bar Engine
+    let totalSteps = steps.length;
+    let currentDisplayStep = currentStepIdx + 1;
+    let percent = Math.round((currentDisplayStep / totalSteps) * 100);
+    let progressText = document.getElementById('mobileProgressText');
+    let progressFill = document.getElementById('mobileProgressFill');
+    if (progressText && progressFill) {
+      progressText.innerText = `Step ${currentDisplayStep} of ${totalSteps} (${percent}%)`;
+      progressFill.style.width = `${percent}%`;
+    }
+
+    document.getElementById("prevBtn").style.display = (currentStepIdx === 0) ? "none" : "flex";
+    
+    if (currentStepIdx === (steps.length - 1)) {
+      document.getElementById("nextBtn").style.display = "none";
+      document.getElementById("submitBtn").style.display = "flex";
+      populateReview(); 
+    } else {
+      document.getElementById("nextBtn").style.display = "flex";
+      document.getElementById("submitBtn").style.display = "none";
+    }
+    updateProgressVisuals();
+  }
+
+  function navigateForm(n) {
+    let steps = getActiveSteps();
+    if (n === 1 && !validateCurrentStep(steps[currentStepIdx])) return false;
+    currentStepIdx += n;
+    if (currentStepIdx === 2 && n === 1) {
+      syncLiveFormData();
+    }
+    renderView();
+  }
+
+  function validateCurrentStep(stepEl) {
+    let valid = true;
+    let inputs = stepEl.querySelectorAll("input[required], select[required]");
+    for (let i = 0; i < inputs.length; i++) {
+      if (inputs[i].value.trim() === "") {
+        inputs[i].classList.add("invalid");
+        valid = false;
+      } else {
+        inputs[i].classList.remove("invalid");
+      }
+    }
+    if(!valid) {
+      const container = document.querySelector('.wizard-wrapper');
+      container.style.animation = "none";
+      setTimeout(() => container.style.animation = "shake 0.4s", 10);
+    }
+    return valid;
+  }
+
+  function updateProgressVisuals() {
+    let icons = getActiveIcons();
+    icons.forEach((icon, i) => {
+      icon.classList.remove("active", "completed");
+      if (i < currentStepIdx) {
+        icon.classList.add("completed");
+        icon.querySelector('i').className = "fas fa-check";
+      }
+      if (i === currentStepIdx) {
+        icon.classList.add("active");
+        let origIcon = ['fa-id-card', 'fa-user-plus', 'fa-wallet', 'fa-clipboard-check'][parseInt(icon.id.replace('ind-',''))];
+        icon.querySelector('i').className = "fas " + origIcon;
+      }
+      if (i > currentStepIdx) {
+        let origIcon = ['fa-id-card', 'fa-user-plus', 'fa-wallet', 'fa-clipboard-check'][parseInt(icon.id.replace('ind-',''))];
+        icon.querySelector('i').className = "fas " + origIcon;
+      }
+    });
+  }
+
+  function toggleCoMaker() {
+    const isChecked = document.getElementById('coMakerToggle').checked;
+    const coMakerStep = document.getElementById('step-1');
+    const coMakerIcon = document.getElementById('ind-1');
+    const coMakerIncomeGroup = document.getElementById('coMakerIncomeGroup');
+    const reviewCard = document.getElementById('reviewCoMakerCard');
+    
+    if(isChecked) {
+      coMakerStep.classList.remove('skipped');
+      coMakerIcon.classList.remove('skipped');
+      coMakerIncomeGroup.style.display = 'block';
+      reviewCard.style.display = 'block';
+    } else {
+      coMakerStep.classList.add('skipped');
+      coMakerIcon.classList.add('skipped');
+      coMakerIncomeGroup.style.display = 'none';
+      reviewCard.style.display = 'none';
+    }
+    updateProgressVisuals();
+    if (typeof saveFormDraft === "function") saveFormDraft(); // ✨ FRIDAY FIX: Auto-save ang Co-Maker switch
+  }
+
+  document.querySelectorAll('select, input').forEach(el => {
+    el.addEventListener('change', function() {
+      if(this.value) this.classList.add('has-value');
+      else this.classList.remove('has-value');
+      if(typeof saveFormDraft === "function") saveFormDraft(); // ✨ FRIDAY FIX: Auto-save on change
+      
+      // ✨ FRIDAY FIX: Real-time Validation for Dropdowns
+      if(this.hasAttribute('required')) {
+         if(this.value.trim() === "") { this.classList.add('invalid'); this.classList.remove('valid'); }
+         else { this.classList.remove('invalid'); this.classList.add('valid'); }
+      }
+    });
+    
+    el.addEventListener('keyup', function() {
+      if(typeof saveFormDraft === "function") saveFormDraft(); // ✨ FRIDAY FIX: Auto-save on type
+    });
+    
+    // ✨ FRIDAY FIX: Real-time Validation on Blur (Leave field)
+    el.addEventListener('blur', function() {
+      if(this.hasAttribute('required')) {
+         if(this.value.trim() === "") { this.classList.add('invalid'); this.classList.remove('valid'); }
+         else { this.classList.remove('invalid'); this.classList.add('valid'); }
+      }
+    });
+  });
+
+  // ✨ FRIDAY NEW: AUTO-SAVE DRAFT ENGINE
+  function saveFormDraft() {
+    let draft = {};
+    document.querySelectorAll('#appForm input:not([type="checkbox"]):not([type="hidden"]), #appForm select').forEach(el => {
+      let key = el.name || el.id;
+      if(key) draft[key] = el.value;
+    });
+    draft['coMakerToggle'] = document.getElementById('coMakerToggle').checked;
+    localStorage.setItem('dealerhub_draft', JSON.stringify(draft));
+  }
+
+  function loadFormDraft() {
+    let raw = localStorage.getItem('dealerhub_draft');
+    if(!raw) return;
+    try {
+      let draft = JSON.parse(raw);
+      
+      // Restore Co-Maker Toggle — pero ONLY if may laman na yung form (may draft data)
+if(draft['coMakerToggle'] !== undefined && draft['makerName']) {
+    document.getElementById('coMakerToggle').checked = draft['coMakerToggle'];
+    toggleCoMaker();
+}
+
+      // Restore Inputs & Selects
+      for(let key in draft) {
+        let el = document.querySelector(`[name="${key}"], #${key}`);
+        if(el && draft[key]) {
+          el.value = draft[key];
+          el.classList.add('has-value');
+          if(el.name && el.name.toLowerCase().includes('bday')) el.type = 'date'; 
+        }
+      }
+
+      // Trigger logic cascades (Dropdown dependencies)
+      if(draft['makerProvince']) updateCities('maker');
+      if(draft['coMakerProvince']) updateCities('coMaker');
+      
+      setTimeout(() => {
+        if(draft['makerCity']) document.getElementById('makerCity').value = draft['makerCity'];
+        if(draft['coMakerCity']) document.getElementById('coMakerCity').value = draft['coMakerCity'];
+      }, 100);
+
+      if(draft['modeOfPayment']) toggleBankFields();
+      if(draft['agentName']) updateManager();
+      
+      if(draft['carModel']) {
+        updateVariants();
+        setTimeout(() => {
+          if(draft['carVariant']) {
+            document.getElementById('carVariantSelect').value = draft['carVariant'];
+            updateColors();
+            setTimeout(() => {
+              if(draft['carColor']) document.getElementById('carColorSelect').value = draft['carColor'];
+            }, 100);
+          }
+        }, 100);
+      }
+    } catch(e) {}
+  }
+
+  function clearFormDraft() {
+    localStorage.removeItem('dealerhub_draft');
+  }
+
+  document.querySelectorAll('input[name="makerIncome"], input[name="coMakerIncome"]').forEach(inp => {
+    inp.addEventListener('input', function() {
+      let val = this.value.replace(/[^\d.]/g, '');
+      let parts = val.split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      this.value = parts.join('.');
+    });
+  });
+
+  function applyMask(selector, pattern) {
+    document.querySelectorAll(selector).forEach(input => {
+      input.addEventListener('input', function(e) {
+        let val = this.value.replace(/\D/g, '');
+        if(pattern === 'mobile') {
+          let match = val.match(/(\d{0,4})(\d{0,3})(\d{0,4})/);
+          this.value = !match[2] ? match[1] : match[1] + '-' + match[2] + (match[3] ? '-' + match[3] : '');
+        } else if(pattern === 'tin') {
+          let match = val.match(/(\d{0,3})(\d{0,3})(\d{0,3})/);
+          this.value = !match[2] ? match[1] : match[1] + '-' + match[2] + (match[3] ? '-' + match[3] : '');
+        }
+      });
+    });
+  }
+  applyMask('input[name="makerCell"], input[name="coMakerCell"]', 'mobile');
+  applyMask('input[name="makerTin"], input[name="coMakerTin"]', 'tin');
+
+  // ✨ FRIDAY FIX: AUTO-AGE CALCULATION ENGINE
+  function setupAgeAutoCalc(bdayName, ageName) {
+    const bdayInput = document.querySelector(`input[name="${bdayName}"]`);
+    const ageInput = document.querySelector(`input[name="${ageName}"]`);
+
+    bdayInput.addEventListener('change', function() {
+      if (!this.value) return;
+      const birth = new Date(this.value);
+      const today = new Date();
+      let age = today.getFullYear() - birth.getFullYear();
+      const m = today.getMonth() - birth.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+      
+      ageInput.value = age > 0 ? age : 0;
+      ageInput.classList.add('has-value');
+      if(typeof saveFormDraft === "function") saveFormDraft();
+    });
+  }
+
+  setupAgeAutoCalc('makerBday', 'makerAge');
+  setupAgeAutoCalc('coMakerBday', 'coMakerAge');
+
+  function toggleSubmitButton() {
+    document.getElementById('submitBtn').disabled = !document.getElementById('consentCheck').checked;
+  }
+
+  function getVal(name) {
+    let el = document.querySelector(`[name='${name}']`);
+    return (el && el.value) ? el.value : "N/A";
+  }
+
+  function populateReview() {
+    document.getElementById("r_mName").innerText = getVal('makerName');
+    document.getElementById("r_mCell").innerText = getVal('makerCell');
+    document.getElementById("r_mEmp").innerText = getVal('makerEmployer');
+    
+    let mSt = document.getElementById('makerStreet').value;
+    let mCy = document.getElementById('makerCity').value;
+    let mPr = document.getElementById('makerProvince').value;
+    document.getElementById("r_mAddress").innerText = (mSt && mCy && mPr) ? `${mSt}, ${mCy}, ${mPr}` : "N/A";
+
+    if(document.getElementById('coMakerToggle').checked) {
+      document.getElementById("r_cName").innerText = getVal('coMakerName');
+      document.getElementById("r_cCell").innerText = getVal('coMakerCell');
+      document.getElementById("r_cEmp").innerText = getVal('coMakerEmployer');
+      
+      let cSt = document.getElementById('coMakerStreet').value;
+      let cCy = document.getElementById('coMakerCity').value;
+      let cPr = document.getElementById('coMakerProvince').value;
+      document.getElementById("r_cAddress").innerText = (cSt && cCy && cPr) ? `${cSt}, ${cCy}, ${cPr}` : "N/A";
+    }
+
+    let mInc = getVal('makerIncome'); document.getElementById("r_mInc").innerText = mInc !== "N/A" ? "₱ " + mInc : "N/A";
+    let cInc = getVal('coMakerIncome'); document.getElementById("r_cInc").innerText = cInc !== "N/A" ? "₱ " + cInc : "N/A";
+    
+    document.getElementById("r_agent").innerText = getVal('agentName');
+    document.getElementById("r_manager").innerText = getVal('managerName');
+    let mop = getVal('modeOfPayment');
+    document.getElementById("r_mop").innerText = mop;
+    document.getElementById("r_carModel").innerText = getVal('carModel');
+    document.getElementById("r_carVariant").innerText = getVal('carVariant');
+    document.getElementById("r_carColor").innerText = getVal('carColor');
+    
+    if (mop === "Cash") {
+      document.getElementById("r_bType_box").style.display = "none";
+      document.getElementById("r_bName_box").style.display = "none";
+    } else {
+      document.getElementById("r_bType_box").style.display = "flex";
+      document.getElementById("r_bName_box").style.display = "flex";
+      document.getElementById("r_bType").innerText = getVal('bankType');
+      document.getElementById("r_bName").innerText = getVal('bankName');
+    }
+  }
+
+  function toggleBankFields() {
+    let mop = document.getElementById('mopSelect').value;
+    let typeGroup = document.getElementById('bankTypeGroup');
+    let nameGroup = document.getElementById('bankNameGroup');
+    let typeInput = document.getElementById('bankTypeInput');
+    let nameInput = document.getElementById('bankNameInput');
+
+    if (mop === "Cash") {
+      typeGroup.style.display = "none";
+      nameGroup.style.display = "none";
+      typeInput.required = false;
+      nameInput.required = false;
+      typeInput.value = ""; typeInput.classList.remove('has-value');
+      nameInput.value = ""; nameInput.classList.remove('has-value');
+    } else {
+      typeGroup.style.display = "block";
+      nameGroup.style.display = "block";
+      typeInput.required = true;
+      nameInput.required = true;
+    }
+  }
+
+  // ✨ FRIDAY NEW: FUNCTION PARA PUMASOK SA FORM MULA SA WELCOME SCREEN
+function enterForm() {
+  document.getElementById('welcomeScreen').style.display = 'none';
+  document.getElementById('mainWizard').style.display = 'flex';
+}
+
+function startNewForm() {
+  clearFormDraft(); 
+  const form = document.getElementById('appForm');
+  form.reset(); 
+
+  // ✨ FRIDAY FIX: Universal Reset para sa lahat ng dropdowns
+  document.querySelectorAll('#appForm select').forEach(sel => {
+    sel.value = ""; // Piliting maging blank ang value
+    const parent = sel.closest('.input-group');
+    if(parent) parent.classList.remove('active-dropdown', 'has-value');
+  });
+
+  // Linisin ang iba pang styling classes
+  document.querySelectorAll('.invalid, .has-value').forEach(el => {
+    el.classList.remove('invalid', 'has-value');
+  });
+
+  document.getElementById('consentCheck').checked = false; 
+  document.getElementById('submitBtn').disabled = true; 
+  document.getElementById('submitBtn').innerHTML = "<i class='fas fa-paper-plane'></i> Final Submit";
+  document.getElementById('coMakerToggle').checked = false;
+  currentStepIdx = 0; 
+  toggleCoMaker(); 
+  
+  document.getElementById('bankTypeGroup').style.display = "block";
+  document.getElementById('bankNameGroup').style.display = "block";
+  document.getElementById('bankTypeInput').required = true;
+  document.getElementById('bankNameInput').required = true;
+
+  // ✨ FRIDAY FIX: Force clean and disable dynamic dropdowns
+  const emptyOption = '<option value="" disabled selected hidden></option>';
+  ['makerCity', 'coMakerCity', 'carVariantSelect', 'carColorSelect'].forEach(id => {
+    let el = document.getElementById(id);
+    if(el) {
+      el.innerHTML = emptyOption;
+      el.disabled = true;
+      el.value = "";
+    }
+  });
+
+  document.getElementById('successMessage').style.display = 'none';
+  document.getElementById('appForm').style.display = 'block';
+  document.getElementById('formHeader').style.display = 'block';
+  document.getElementById('formFooter').style.display = 'flex';
+  
+  renderView(); 
+}
+
+  function initCatalog() {
+    let modelSelect = document.getElementById('carModelSelect');
+    modelSelect.innerHTML = '<option value="" disabled selected hidden></option>';
+    
+    let models = Object.keys(vehicleCatalog).sort(); 
+    models.forEach(model => {
+      let opt = document.createElement('option');
+      opt.value = model;
+      opt.innerText = model;
+      modelSelect.appendChild(opt);
+    });
+  }
+
+  function updateVariants() {
+    let model = document.getElementById('carModelSelect').value;
+    let variantSelect = document.getElementById('carVariantSelect');
+    let colorSelect = document.getElementById('carColorSelect');
+    
+    variantSelect.innerHTML = '<option value="" disabled selected hidden></option>';
+    variantSelect.classList.remove('has-value');
+    colorSelect.innerHTML = '<option value="" disabled selected hidden></option>';
+    colorSelect.classList.remove('has-value');
+    colorSelect.disabled = true;
+
+    if (model && vehicleCatalog[model]) {
+      let variants = Object.keys(vehicleCatalog[model]).sort();
+      variants.forEach(variant => {
+        let opt = document.createElement('option');
+        opt.value = variant;
+        opt.innerText = variant;
+        variantSelect.appendChild(opt);
+      });
+      variantSelect.disabled = false; 
+    } else {
+      variantSelect.disabled = true;
+    }
+  }
+
+  function updateColors() {
+    let model = document.getElementById('carModelSelect').value;
+    let variant = document.getElementById('carVariantSelect').value;
+    let colorSelect = document.getElementById('carColorSelect');
+    
+    colorSelect.innerHTML = '<option value="" disabled selected hidden></option>';
+    colorSelect.classList.remove('has-value');
+
+    if (model && variant && vehicleCatalog[model][variant]) {
+      let colors = vehicleCatalog[model][variant]; 
+      colors.forEach(color => {
+        let opt = document.createElement('option');
+        opt.value = color;
+        opt.innerText = color;
+        colorSelect.appendChild(opt);
+      });
+      colorSelect.disabled = false; 
+    } else {
+      colorSelect.disabled = true;
+    }
+  }
+
+  function submitData() {
+    const btn = document.getElementById('submitBtn');
+    const prev = document.getElementById('prevBtn');
+    btn.innerHTML = "<i class='fas fa-circle-notch fa-spin'></i> Securing Data...";
+    btn.disabled = true; prev.style.display = "none";
+
+    const mStreet = document.getElementById('makerStreet').value;
+    const mCity = document.getElementById('makerCity').value;
+    const mProv = document.getElementById('makerProvince').value;
+    document.getElementById('makerAddressHidden').value = `${mStreet}, ${mCity}, ${mProv}`;
+    
+    if(document.getElementById('coMakerToggle').checked) {
+      const cStreet = document.getElementById('coMakerStreet').value;
+      const cCity = document.getElementById('coMakerCity').value;
+      const cProv = document.getElementById('coMakerProvince').value;
+      document.getElementById('coMakerAddressHidden').value = `${cStreet}, ${cCity}, ${cProv}`;
+    } else {
+      document.getElementById('coMakerAddressHidden').value = "N/A";
+    }
+    
+    const formObject = document.getElementById('appForm');
+    const mInput = document.querySelector("input[name='makerIncome']");
+    const cInput = document.querySelector("input[name='coMakerIncome']");
+    const mOrig = mInput.value; const cOrig = cInput.value;
+    mInput.value = mOrig.replace(/,/g, ''); cInput.value = cOrig.replace(/,/g, '');
+
+    document.getElementById('carVariantSelect').disabled = false;
+    document.getElementById('carColorSelect').disabled = false;
+
+    google.script.run
+        .withSuccessHandler(function(refNo) {
+          clearFormDraft(); // ✨ FRIDAY FIX: Burahin ang draft kapag naging successful ang pasok sa database!
+          document.getElementById('appForm').style.display = 'none';
+        document.getElementById('formHeader').style.display = 'none';
+        document.getElementById('formFooter').style.display = 'none';
+        document.getElementById('successMessage').style.display = 'flex';
+        document.getElementById('displayRefNo').innerText = refNo;
+        confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#2563eb', '#f59e0b', '#10b981'] });
+      })
+      .withFailureHandler(function(error) {
+        alert("System Error. Please try again.");
+        mInput.value = mOrig; cInput.value = cOrig;
+        btn.innerHTML = "<i class='fas fa-paper-plane'></i> Final Submit";
+        btn.disabled = false; prev.style.display = "flex";
+      })
+      .submitApplication(formObject);
+  }
+
+renderView();
+toggleCoMaker();
+
+  const phCities = {
+    "Metro Manila": ["Manila", "Quezon City", "Caloocan", "Las Piñas", "Makati", "Malabon", "Mandaluyong", "Marikina", "Muntinlupa", "Navotas", "Parañaque", "Pasay", "Pasig", "San Juan", "Taguig", "Valenzuela", "Pateros"],
+    "Bataan": ["Balanga", "Abucay", "Bagac", "Dinalupihan", "Hermosa", "Limay", "Mariveles", "Morong", "Orani", "Orion", "Pilar", "Samal"],
+    "Batangas": ["Batangas City", "Lipa", "Tanauan", "Bauan", "San Pascual", "Santo Tomas", "Nasugbu", "Lemery", "Calaca", "San Jose"],
+    "Bulacan": ["Malolos", "Meycauayan", "San Jose del Monte", "Baliuag", "Bocaue", "Marilao", "Hagonoy", "Plaridel", "Santa Maria"],
+    "Cavite": ["Bacoor", "Cavite City", "Dasmariñas", "General Trias", "Imus", "Tagaytay", "Trece Martires", "Carmona", "Silang", "Kawit"],
+    "Laguna": ["Biñan", "Cabuyao", "Calamba", "San Pablo", "San Pedro", "Santa Rosa", "Los Baños", "Santa Cruz"],
+    "Nueva Ecija": ["Cabanatuan", "Gapan", "Palayan", "San Jose", "Science City of Muñoz", "Guimba", "Talavera"],
+    "Palawan": ["Puerto Princesa", "Coron", "El Nido", "San Vicente", "Brooke's Point", "Roxas"],
+    "Pampanga": ["Angeles", "San Fernando", "Mabalacat", "Apalit", "Arayat", "Bacolor", "Candaba", "Floridablanca", "Guagua", "Lubao", "Macabebe", "Magalang", "Mexico", "Porac"],
+    "Pangasinan": ["Alaminos", "Dagupan", "San Carlos", "Urdaneta", "Lingayen", "Binmaley", "Bayambang", "Mangaldan"],
+    "Quezon": ["Lucena", "Tayabas", "Candelaria", "Sariaya", "Tiaong", "Gumaca", "Lopez", "Pagbilao"],
+    "Rizal": ["Antipolo", "Angono", "Binangonan", "Cainta", "San Mateo", "Taytay", "Rodriguez", "Teresa", "Morong"],
+    "Tarlac": ["Tarlac City", "Capas", "Concepcion", "Paniqui", "Bamban", "Camiling"],
+    "Bohol": ["Tagbilaran", "Carmen", "Panglao", "Tubigon", "Ubay", "Jagna", "Talibon"],
+    "Cebu": ["Cebu City", "Lapu-Lapu", "Mandaue", "Talisay", "Danao", "Carcar", "Naga", "Toledo", "Bogo", "Consolacion", "Liloan", "Minglanilla"],
+    "Iloilo": ["Iloilo City", "Passi", "Oton", "Pototan", "Pavia", "Santa Barbara", "Miagao"],
+    "Leyte": ["Tacloban", "Ormoc", "Baybay", "Palo", "Tanauan", "Burauen"],
+    "Negros Occidental": ["Bacolod", "Bago", "Cadiz", "Escalante", "Himamaylan", "Kabankalan", "La Carlota", "Sagay", "San Carlos", "Silay", "Sipalay", "Talisay", "Victorias"],
+    "Negros Oriental": ["Dumaguete", "Bais", "Bayawan", "Canlaon", "Guihulngan", "Tanjay"],
+    "Davao del Norte": ["Tagum", "Panabo", "Samal", "Santo Tomas", "Kapalong"],
+    "Davao del Sur": ["Davao City", "Digos", "Bansalan", "Santa Cruz", "Malita"],
+    "Davao Oriental": ["Mati", "Lupon", "Banaybanay", "San Isidro"],
+    "Misamis Oriental": ["Cagayan de Oro", "Gingoog", "El Salvador", "Tagoloan", "Villanueva", "Opol"],
+    "Zamboanga del Sur": ["Zamboanga City", "Pagadian", "Aurora", "Molave", "Tambulig"]
+  };
+
+  function updateCities(type) {
+    let provSelect = document.getElementById(type + 'Province');
+    let citySelect = document.getElementById(type + 'City');
+    let selectedProv = provSelect.value;
+    
+    citySelect.innerHTML = '<option value="" disabled selected hidden></option>';
+    citySelect.classList.remove('has-value'); 
+    
+    if (selectedProv && phCities[selectedProv]) {
+      let sortedCities = phCities[selectedProv].sort();
+      sortedCities.forEach(city => {
+        let opt = document.createElement('option');
+        opt.value = city;
+        opt.innerText = city;
+        citySelect.appendChild(opt);
+      });
+      citySelect.disabled = false; 
+    } else {
+      citySelect.disabled = true; 
+    }
+  }
+
+  document.querySelectorAll('input[type="date"]').forEach(el => {
+  el.addEventListener('change', function() {
+    if(this.value) this.classList.add('has-value');
+    else this.classList.remove('has-value');
+  });
+});
+
+  // ✨ FRIDAY FIX: Magic Interceptor para sa Choices.js Dropdowns
+  let choicesInstances = new Map();
+  function refreshPremiumDropdowns() {
+    document.querySelectorAll('.input-group select').forEach(select => {
+      if (choicesInstances.has(select)) {
+        choicesInstances.get(select).destroy();
+      }
+      
+      let c = new Choices(select, {
+        searchEnabled: false,
+        itemSelectText: '',
+        shouldSort: false,
+        position: 'bottom'
+      });
+      choicesInstances.set(select, c);
+      
+      let parent = select.closest('.input-group');
+      if (select.value) parent.classList.add('active-dropdown');
+      
+      select.addEventListener('change', () => {
+        if(select.value) parent.classList.add('active-dropdown');
+        else parent.classList.remove('active-dropdown');
+      });
+      select.addEventListener('showDropdown', () => parent.classList.add('active-dropdown'));
+      select.addEventListener('hideDropdown', () => {
+        if(!select.value) parent.classList.remove('active-dropdown');
+      });
+    });
+  }
+
+  const funcsToIntercept = ['updateCities', 'updateVariants', 'updateColors', 'initTeamDropdown', 'startNewForm', 'loadFormDraft', 'toggleBankFields', 'toggleCoMaker'];
+  funcsToIntercept.forEach(funcName => {
+    if(typeof window[funcName] === 'function') {
+      const orig = window[funcName];
+      window[funcName] = function(...args) {
+        orig.apply(this, args);
+        setTimeout(refreshPremiumDropdowns, 100);
+      };
+    }
+  });
+
+  setTimeout(refreshPremiumDropdowns, 500);
+
+</script>
+
+<style>
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+
+  /* ✨ FRIDAY FIX: ULTIMATE MOBILE ENGINE */
+  @media (max-width: 900px) {
+  .welcome-glass-card { padding: 40px 25px; }
+  .welcome-title { font-size: 28px; }
+  .welcome-sub { font-size: 14px; padding: 0 10px; }
+    body { 
+      height: 100dvh; /* Respetuhin ang address bar ng cellphone */
+    }
+    .wizard-wrapper {
+      flex-direction: column;
+      width: 100vw;
+      height: 100dvh; 
+      max-height: none;
+      border-radius: 0;
+    }
+    .wizard-content {
+      min-height: 0; /* MAGIC FIX: Pipigilan nito ang container na humaba, kaya mag-iinternal scroll siya! */
+    }
+    .wizard-sidebar {
+      width: 100%;
+      padding: 15px 20px;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      border-right: none;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      box-sizing: border-box;
+      flex-shrink: 0; /* Huwag liitan ang header */
+    }
+    .brand { margin-bottom: 0; }
+    .brand h1 { display: none; } 
+    
+    .step-list { flex-direction: row; gap: 10px; }
+    .step-item { padding: 8px; border-radius: 12px; }
+    .step-item .text-box { display: none; } 
+    .sidebar-footer { display: none; } 
+    
+    .form-header { padding: 20px; flex-shrink: 0; }
+    .mobile-progress-wrapper { display: block; } /* ✨ Show on mobile */
+    #headerSub { display: none; } /* ✨ Hide subtitle on mobile to save space */
+    .form-body { padding: 20px; overflow-y: auto; } /* I-force ang scroll dito */
+    .form-footer { padding: 15px 20px; flex-shrink: 0; } /* I-lock ang buttons sa ilalim */
+    
+    /* 1-column grid */
+    .form-grid { grid-template-columns: 1fr; }
+    .span-2, .span-3 { grid-column: span 1; }
+    .receipt-grid { grid-template-columns: 1fr; }
+    .r-item.span-2, .r-item.span-3 { grid-column: span 1; }
+    
+    .success-icon { font-size: 50px; }
+    .ref-no { font-size: 22px; padding: 10px 20px; }
+  }
+</style>
+
+</body>
+</html>
