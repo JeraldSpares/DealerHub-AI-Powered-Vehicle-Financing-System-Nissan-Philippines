@@ -6,6 +6,28 @@
 [![License](https://img.shields.io/badge/license-proprietary-blue)]()
 [![AI](https://img.shields.io/badge/AI-Gemini%202.5%20Flash-purple)]()
 [![Database](https://img.shields.io/badge/database-Supabase-green)]()
+[![Backend](https://img.shields.io/badge/backend-Google%20Apps%20Script-yellow)]()
+[![Frontend](https://img.shields.io/badge/frontend-Vanilla%20JS-orange)]()
+
+---
+
+## 📑 Table of Contents
+
+- [Overview](#-overview)
+- [Screenshots](#-screenshots)
+- [Key Features](#-key-features)
+- [System Workflow](#-system-workflow)
+- [Architecture](#️-architecture)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Application Pipeline & Status Definitions](#-application-pipeline--status-definitions)
+- [AI Risk Assessment](#-ai-risk-assessment)
+- [Key Technical Highlights](#-key-technical-highlights)
+- [Installation & Setup](#-installation--setup)
+- [Security & Privacy](#-security--privacy)
+- [Impact & Results](#-impact--results)
+- [Author](#-author)
+- [License](#-license)
 
 ---
 
@@ -15,9 +37,76 @@
 
 The platform serves **three distinct user personas**:
 
-- **Clients** — Submit vehicle financing applications via a multi-step wizard form
-- **Agents & Managers** — Receive real-time lead notifications and track pipeline progress
-- **Administrators** — Evaluate applications with AI-powered risk analysis, manage the catalog, and oversee operations via an executive dashboard
+| Persona | Capabilities |
+|---------|--------------|
+| 👤 **Clients** | Submit vehicle financing applications via a multi-step wizard form with auto-save drafts and 256-bit SSL encryption |
+| 🤝 **Agents & Managers** | Receive real-time lead notifications, monitor pipeline progress, and own the relationship with assigned clients |
+| 🛡️ **Administrators** | Evaluate applications with AI-powered risk analysis, manage the vehicle catalog, oversee the sales team, and access the executive dashboard |
+
+---
+
+## 📸 Screenshots
+
+### 🔐 Administrator Login Portal
+> Secure access gate for authorized Nissan dealer administrators — protected by reCAPTCHA v2, SHA-256 password hashing, and login throttling.
+
+![Administrator Login Portal](DEALERHUB%20STSTEM%20SCREENSHOTS/Screenshot%202026-05-04%20121733.png)
+
+---
+
+### 🌐 Client Landing Page
+> Nissan-branded entry point for prospective buyers. Cinematic hero with the "Elevate Your Drive" CTA launches the multi-step financing application wizard.
+
+![Client Landing Page](DEALERHUB%20STSTEM%20SCREENSHOTS/Screenshot%202026-05-04%20121847.png)
+
+---
+
+### 📝 Multi-Step Application Wizard
+> Clean, guided application flow: **Principal Maker → Financial Data → Review & Submit**. Includes an optional Co-Maker toggle, auto-calculated age from DOB, Philippine province/city autocomplete, and a 256-bit SSL Secure Encryption notice covering Data Privacy Act of 2012 compliance.
+
+![Multi-Step Application Form](DEALERHUB%20STSTEM%20SCREENSHOTS/Screenshot%202026-05-04%20121924.png)
+
+---
+
+### 📊 Analytics Dashboard
+> Real-time executive view showing All Leads, Approved, Good for Release, Released, and the current Top Released model. Features an **interactive Philippine map** with regional heat mapping and a **Finance Approval Rate** doughnut chart.
+
+![Analytics Dashboard](DEALERHUB%20STSTEM%20SCREENSHOTS/Screenshot%202026-05-04%20122121.png)
+
+---
+
+### 🔥 In Progress Leads
+> Active pipeline view with KPI tiles for Total In Progress, Warm, Hot, Approved, and Good for Release counts. Inline status badges, AI Recommendations button, and quick-action buttons per row.
+
+![In Progress Leads](DEALERHUB%20STSTEM%20SCREENSHOTS/Screenshot%202026-05-04%20122034.png)
+
+---
+
+### ✅ Leads Progressed
+> Historical record of completed, released, lost-sale, and spam-flagged applications. Includes Top Released model tracking and segmented tabs for fast filtering.
+
+![Leads Progressed](DEALERHUB%20STSTEM%20SCREENSHOTS/Screenshot%202026-05-04%20122207.png)
+
+---
+
+### 🚙 Vehicle Catalog Management
+> Centralized control for the Brand → Model → Variant → Color hierarchy that powers the client-facing form. Inline editing, active/inactive toggle, and auto-sync to the application wizard.
+
+![Vehicle Catalog Management](DEALERHUB%20STSTEM%20SCREENSHOTS/Screenshot%202026-05-04%20122252.png)
+
+---
+
+### 👥 Sales Team Directory
+> Manager-Agent hierarchy management. Each manager can supervise multiple agents; status toggles control who receives lead notifications. Changes sync directly to the public form.
+
+![Sales Team Directory](DEALERHUB%20STSTEM%20SCREENSHOTS/Screenshot%202026-05-04%20122339.png)
+
+---
+
+### ⚙️ Settings Hub
+> Mission control for the platform — General configuration, System Lists, Profile & Security, Database Health, Archived Records, Audit Logs, and **AI Risk Rules**. Includes maintenance mode toggle, ASMR sound effects switch, and a custom maintenance message.
+
+![Settings Hub](DEALERHUB%20STSTEM%20SCREENSHOTS/Screenshot%202026-05-04%20122423.png)
 
 ---
 
@@ -28,7 +117,8 @@ The platform serves **three distinct user personas**:
 - Analyzes applicant data against configurable business rules (income thresholds, age limits, employment tenure, TIN verification)
 - Generates `LOW RISK`, `MEDIUM RISK`, or `HIGH RISK` scores with detailed reasoning
 - **Batch analysis mode** for processing multiple pending applications at once
-- Custom AI instructions configurable via admin panel
+- Custom AI instructions configurable via admin panel (the "AI Risk Rules" tab in Settings Hub)
+- Recommendation history persists with each application for auditability
 
 ### 📊 Executive Analytics Dashboard
 - Real-time KPI cards (Total Leads, Approved, Good for Release, Released, Top Model)
@@ -47,6 +137,7 @@ The platform serves **three distinct user personas**:
 - **Auto-calculate age** from date of birth
 - Optional co-maker toggle with automatic field hiding
 - reCAPTCHA v2 protection
+- 256-bit SSL secure transmission notice for client trust
 
 ### 🔐 Enterprise Security
 - **SHA-256 password hashing** with automatic migration from plaintext
@@ -69,6 +160,7 @@ The platform serves **three distinct user personas**:
   - Agent/Manager team notifications
   - Status change updates
 - Color-coded status badges that match the dashboard
+- Triggered automatically on submission and status changes
 
 ### 📄 Export & Reporting
 - **Premium styled Excel exports** (xlsx-js-style) with:
@@ -99,6 +191,54 @@ The platform serves **three distinct user personas**:
 
 ---
 
+## 🔄 System Workflow
+
+```
+       ┌──────────────────────┐
+       │   Client visits      │
+       │   landing page       │
+       └──────────┬───────────┘
+                  │
+                  ▼
+       ┌──────────────────────┐
+       │  Multi-step Wizard   │
+       │  (Principal Maker →  │
+       │   Financial Data →   │
+       │   Review & Submit)   │
+       └──────────┬───────────┘
+                  │
+                  ▼
+       ┌──────────────────────┐         ┌────────────────────────┐
+       │   Submission stored  │────────▶│  Auto Emails sent to:  │
+       │   in Supabase        │         │  • Client (confirm)    │
+       └──────────┬───────────┘         │  • Admin (new lead)    │
+                  │                     │  • Agent/Manager       │
+                  ▼                     └────────────────────────┘
+       ┌──────────────────────┐
+       │   Admin reviews +    │
+       │   AI Risk Analysis   │
+       │   (Gemini 2.5 Flash) │
+       └──────────┬───────────┘
+                  │
+                  ▼
+       ┌──────────────────────────────────────────────┐
+       │  Kanban Pipeline (drag & drop, rank-locked): │
+       │                                              │
+       │  Warm → Hot → Approved → GFR → Released      │
+       │                                              │
+       │  • Cash / P.O. skip the "Approved" stage     │
+       │  • Lost Sales / Spam are terminal states     │
+       └──────────┬───────────────────────────────────┘
+                  │
+                  ▼
+       ┌──────────────────────┐
+       │  Analytics, Exports, │
+       │  Audit Logs, Backup  │
+       └──────────────────────┘
+```
+
+---
+
 ## 🏗️ Architecture
 
 ```
@@ -124,12 +264,12 @@ The platform serves **three distinct user personas**:
              │                          │
              ▼                          ▼
 ┌──────────────────────┐      ┌──────────────────────────┐
-│   SUPABASE (PostgreSQL)│     │   EXTERNAL APIs         │
-│  • applications        │     │  • Google Gemini 2.5    │
-│  • logs                │     │  • Google reCAPTCHA v2  │
-│  • settings            │     │                         │
-│  • catalog             │     └─────────────────────────┘
-│  • team                │
+│ SUPABASE (PostgreSQL)│      │   EXTERNAL APIs          │
+│  • applications      │      │  • Google Gemini 2.5     │
+│  • logs              │      │  • Google reCAPTCHA v2   │
+│  • settings          │      │  • Google Drive (backup) │
+│  • catalog           │      │                          │
+│  • team              │      └──────────────────────────┘
 └──────────────────────┘
 ```
 
@@ -142,13 +282,14 @@ The platform serves **three distinct user personas**:
 | **Frontend** | Vanilla JavaScript, HTML5, CSS3 |
 | **Backend** | Google Apps Script (Node-like runtime) |
 | **Database** | Supabase (PostgreSQL) |
-| **AI/LLM** | Google Gemini 2.5 Flash |
-| **Authentication** | Google reCAPTCHA v2 + SHA-256 |
+| **AI / LLM** | Google Gemini 2.5 Flash |
+| **Authentication** | Google reCAPTCHA v2 + SHA-256 password hashing |
 | **Charts** | Chart.js, Highmaps, Recharts |
 | **Exports** | xlsx-js-style, jsPDF, html2canvas |
 | **UI Libraries** | Choices.js, Cropper.js, Canvas-Confetti |
 | **Fonts** | Inter, Poppins, Orbitron |
 | **Icons** | Font Awesome 6 |
+| **Backup Storage** | Google Drive |
 
 ---
 
@@ -156,12 +297,61 @@ The platform serves **three distinct user personas**:
 
 ```
 DealerHub/
-├── Code.gs              # Main backend logic (auth, CRUD, AI, email)
-├── Supabase.gs          # Database helper module
-├── Form.html            # Client-facing application wizard
-├── Admin.html           # Administrator dashboard & management UI
-└── README.md            # This file
+├── Code.gs                          # Main backend logic (auth, CRUD, AI, email)
+├── Supabase.gs                      # Database helper module (REST wrapper)
+├── Form.html                        # Client-facing application wizard
+├── Admin.html                       # Administrator dashboard & management UI
+├── DEALERHUB STSTEM SCREENSHOTS/    # System screenshots used in this README
+└── README.md                        # You are here
 ```
+
+---
+
+## 🚦 Application Pipeline & Status Definitions
+
+| Status | Rank | Meaning |
+|--------|:---:|---------|
+| **Warm** | 1 | Newly submitted lead — pending review |
+| **Hot** | 2 | Actively engaged — agent in dialogue with the client |
+| **Approved** | 3 | Financing approved (In-house only — skipped for Cash / P.O.) |
+| **Good for Release** | 4 | All requirements complete, unit reserved |
+| **Released** | 5 | Vehicle has been turned over to the client (terminal) |
+| **Lost Sale** | — | Deal fell through (terminal — not allowed on Released records) |
+| **Spam** | — | Invalid / duplicate / test submission (terminal) |
+
+> 🔒 **Rank-locked progression** — applications can only move *forward* in the pipeline. Backward moves are blocked at the UI level (red drop indicator) and validated again on the server.
+
+### Mode of Payment Branches
+- **In-house Financing** → full pipeline (Warm → Hot → **Approved** → GFR → Released)
+- **Cash** → fast lane (Warm → Hot → GFR → Released, no "Approved" gate)
+- **P.O. (Purchase Order)** → fast lane (Warm → Hot → GFR → Released)
+
+---
+
+## 🧠 AI Risk Assessment
+
+The AI engine evaluates each application against a configurable rule set defined in the **AI Risk Rules** tab of the Settings Hub. A typical analysis considers:
+
+- **Monthly income vs. amortization burden**
+- **Age bracket** (e.g., applicants over 60 flagged for shortened-term scrutiny)
+- **Employment tenure** (less than X months → flag)
+- **TIN format & validity check**
+- **Co-Maker presence and strength** (auto-elevates LOW risk when present and qualified)
+- **Address consistency** (mismatched home vs. employer regions raise a flag)
+- **Custom admin-defined rules** appended at the bottom of the prompt
+
+The model returns a structured JSON verdict containing:
+
+```json
+{
+  "risk": "LOW | MEDIUM | HIGH",
+  "summary": "Concise one-line verdict for the admin table",
+  "reasoning": "Bullet-pointed breakdown of the deciding factors",
+  "recommended_action": "Approve | Request Documents | Decline"
+}
+```
+
+Risk verdicts are persisted with the application so future reviewers see the original AI rationale alongside any human override.
 
 ---
 
@@ -171,12 +361,12 @@ DealerHub/
 The system enforces business rules through a **rank-based validation engine**:
 
 ```javascript
-const ranks = { 
-  "Warm": 1, "Hot": 2, "Approved": 3, 
-  "Good for Release": 4, "Released": 5 
+const ranks = {
+  "Warm": 1, "Hot": 2, "Approved": 3,
+  "Good for Release": 4, "Released": 5
 };
 // Cannot move backward in the pipeline
-// Cash/P.O. applications skip "Approved" stage
+// Cash / P.O. applications skip "Approved" stage
 // Released records cannot be tagged as Lost Sales
 ```
 
@@ -198,7 +388,7 @@ let backup = dbSelect("catalog", { /* ... */ });
 try {
   dbDelete("catalog", { id: "gt.0" });
   dbInsert("catalog", newData);
-} catch(err) {
+} catch (err) {
   // Emergency restore
   dbInsert("catalog", backup);
 }
@@ -209,9 +399,41 @@ Risk assessment prompts are dynamically built with applicant data, system-detect
 
 ---
 
-## 📸 Screenshots
+## 🧪 Installation & Setup
 
-> *Screenshots coming soon — dashboard, form wizard, AI risk assessment, Kanban board*
+> DealerHub is deployed entirely on Google Cloud infrastructure — **no servers to provision and no Docker containers to maintain.**
+
+### Prerequisites
+- A Google Workspace account (for Apps Script deployment)
+- A Supabase project (free tier is enough to get started)
+- A Google Gemini API key
+- A Google reCAPTCHA v2 site/secret key pair
+
+### Steps
+1. **Create the Apps Script project**
+   - Open [script.google.com](https://script.google.com) → New Project
+   - Paste `Code.gs`, `Supabase.gs`, `Form.html`, and `Admin.html` into the editor.
+
+2. **Set Script Properties** (Project Settings → Script properties)
+
+   | Key | Value |
+   |-----|-------|
+   | `SUPABASE_URL` | `https://<your-project>.supabase.co` |
+   | `SUPABASE_KEY` | Service-role key from Supabase |
+   | `GEMINI_API_KEY` | Your Gemini API key |
+   | `RECAPTCHA_SECRET` | reCAPTCHA v2 secret |
+   | `ADMIN_EMAIL` | Default admin recipient |
+
+3. **Create the Supabase tables** — `applications`, `logs`, `settings`, `catalog`, `team` (see `Supabase.gs` for the expected columns).
+
+4. **Deploy as Web App**
+   - `Deploy → New deployment → Web app`
+   - Execute as: *Me*
+   - Who has access: *Anyone* (for the public form) or *Anyone in your organization* (for internal only)
+
+5. **First-time setup**
+   - Visit the deployed URL → log in with the seeded admin credentials → change the password immediately (auto-hashed to SHA-256 on save).
+   - Add vehicle catalog entries and seed the Sales Team Directory before sharing the public form.
 
 ---
 
@@ -219,9 +441,11 @@ Risk assessment prompts are dynamically built with applicant data, system-detect
 
 - All credentials stored in Google Apps Script `PropertiesService` (encrypted at rest)
 - Passwords hashed with SHA-256 before database storage
-- Client data access requires active server-side session token
+- Client data access requires an active server-side session token
 - Complete audit logging for compliance with the Philippines **Data Privacy Act of 2012**
 - Automatic session expiration on logout
+- reCAPTCHA v2 on both the public form and the admin login
+- Maintenance mode toggle for guarded downtime (custom message shown to clients)
 
 ---
 
@@ -232,6 +456,7 @@ Risk assessment prompts are dynamically built with applicant data, system-detect
 - 📈 **Real-time analytics** replacing manual Excel reporting
 - 🔐 **Zero downtime** during high-volume submission periods
 - 📱 **100% responsive** across mobile, tablet, and desktop
+- 🗂️ **Single source of truth** — no more spreadsheets scattered across teams
 
 ---
 
